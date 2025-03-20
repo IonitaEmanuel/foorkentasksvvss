@@ -145,11 +145,10 @@ public class NewEditController {
         TaskDTO collectedFieldsTask = collectFieldsData();
         if (incorrectInputMade) return;
 
-        if (currentTask == null){//no task was chosen -> add button was pressed
+        if (currentTask == null) {
             TaskIO.updateTask(collectedFieldsTask, currentTask, tasksList);
             currentTask = null;
-        }
-        else {
+        } else {
             TaskIO.insertTask(collectedFieldsTask, tasksList);
         }
         GlobalController.editNewStage.close();

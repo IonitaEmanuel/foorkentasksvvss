@@ -7,7 +7,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Task implements Serializable, Cloneable {
+public class Task implements Serializable, Cloneable
+{
     private String title;
     private Date time;
     private Date start;
@@ -18,28 +19,38 @@ public class Task implements Serializable, Cloneable {
     private static final Logger log = Logger.getLogger(Task.class.getName());
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-    public static SimpleDateFormat getDateFormat(){
+    public static SimpleDateFormat getDateFormat()
+    {
         return sdf;
     }
-    public Task(String title, Date time) throws IllegalArgumentException{
-        if (time.getTime() < 0) {
+
+    public Task(String title, Date time) throws IllegalArgumentException
+    {
+        if (time.getTime() < 0)
+        {
             log.error("time below bound");
             throw new IllegalArgumentException("Time cannot be negative");
         }
+
         this.title = title;
         this.time = time;
         this.start = time;
         this.end = time;
     }
-    public Task(String title, Date start, Date end, int interval){
-        if (start.getTime() < 0 || end.getTime() < 0) {
+
+    public Task(String title, Date start, Date end, int interval) throws IllegalArgumentException
+    {
+        if (start.getTime() < 0 || end.getTime() < 0)
+        {
             log.error("time below bound");
             throw new IllegalArgumentException("Time cannot be negative");
         }
-        if (interval < 1) {
+        if (interval < 1)
+        {
             log.error("interval < than 1");
             throw new IllegalArgumentException("interval should be > 0");
         }
+
         this.title = title;
         this.start = start;
         this.end = end;
@@ -66,7 +77,8 @@ public class Task implements Serializable, Cloneable {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(Date time)
+    {
         this.time = time;
         this.start = time;
         this.end = time;
@@ -81,22 +93,24 @@ public class Task implements Serializable, Cloneable {
         return end;
     }
     public int getRepeatInterval(){
-        return interval > 0 ? interval : 0;
+        return Math.max(interval, 0);
     }
 
-    public void setTime(Date start, Date end, int interval){
+    public void setTime(Date start, Date end, int interval)
+    {
         this.time = start;
         this.start = start;
         this.end = end;
         this.interval = interval;
 
     }
-    public boolean isRepeated(){
+    public boolean isRepeated()
+    {
         return !(this.interval == 0);
     }
 
     private boolean isDateValid(Date current) {
-        return !(current.equals(end) || current.after(end) || isActive());
+        return !(current.equals(end) || current.after(end) || !isActive());
     }
 
     private Date loopDates(Date current) {
@@ -106,18 +120,22 @@ public class Task implements Serializable, Cloneable {
             if (current.equals(timeAfter)) {
                 return new Date(timeAfter.getTime() + interval * 1000L);
             }
+
             if (current.after(timeBefore) && current.before(timeAfter)) {
                 return timeAfter;
             }
+
             timeBefore = timeAfter;
             timeAfter = new Date(timeAfter.getTime() + interval * 1000L);
         }
         return null;
     }
-    public Date nextTimeAfter(Date current){
+
+    public Date nextTimeAfter(Date current) {
         if (!isDateValid(current)) {
             return null;
         }
+
         if (isRepeated()) {
             if (current.before(start)) {
                 return start;
@@ -129,38 +147,77 @@ public class Task implements Serializable, Cloneable {
 
         return null;
     }
+
+
     //duplicate methods for TableView which sets column
     // value by single method and doesn't allow passing parameters
-    public String getFormattedDateStart(){
+    public String getFormattedDateStart()
+    {
         return sdf.format(start);
     }
-    public String getFormattedDateEnd(){
+
+    public String getFormattedDateEnd()
+    {
         return sdf.format(end);
     }
-    public String getFormattedRepeated(){
-        if (isRepeated()){
+
+    public String getFormattedRepeated()
+    {
+        if (isRepeated())
+        {
             String formattedInterval = TaskIO.getFormattedInterval(interval);
             return "Every " + formattedInterval;
         }
+
         return "No";
     }
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
 
-        Task task = (Task) o;
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
 
-        if (!time.equals(task.time)) return false;
-        if (!start.equals(task.start)) return false;
-        if (!end.equals(task.end)) return false;
-        if (interval != task.interval) return false;
-        if (active != task.active) return false;
+        Task task = (Task)o;
+
+        if (!time.equals(task.time))
+        {
+            return false;
+        }
+
+        if (!start.equals(task.start))
+        {
+            return false;
+        }
+
+        if (!end.equals(task.end))
+        {
+            return false;
+        }
+
+        if (interval != task.interval)
+        {
+            return false;
+        }
+
+        if (active != task.active)
+        {
+            return false;
+        }
+
         return title.equals(task.title);
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int result = title.hashCode();
         result = 31 * result + time.hashCode();
         result = 31 * result + start.hashCode();
@@ -171,7 +228,8 @@ public class Task implements Serializable, Cloneable {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Task{" +
                 "title='" + title + '\'' +
                 ", time=" + time +
@@ -181,13 +239,14 @@ public class Task implements Serializable, Cloneable {
                 ", active=" + active +
                 '}';
     }
+
     @Override
-    protected Task clone() throws CloneNotSupportedException {
-        Task task  = (Task)super.clone();
+    protected Task clone() throws CloneNotSupportedException
+    {
+        Task task = (Task)super.clone();
         task.time = (Date)this.time.clone();
         task.start = (Date)this.start.clone();
         task.end = (Date)this.end.clone();
         return task;
     }
 }
-

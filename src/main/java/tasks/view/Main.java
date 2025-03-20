@@ -55,8 +55,8 @@ public class Main extends Application {
             log.error("error reading main.fxml");
         }
         primaryStage.setOnCloseRequest(we -> {
-                System.exit(0);
-            });
+            System.exit(0);
+        });
         new Notificator(FXCollections.observableArrayList(service.getObservableList())).start();
     }
 
