@@ -32,7 +32,7 @@ class TaskIOTest {
     @DisplayName("Add Valid Task ECP")
     void testECP_1() {
         assertEquals(tasks.size(), 0);
-        TaskDTO taskDTO = new TaskDTO("Doing things", new Date(2024, 4, 5, 10, 0), null, null, true);
+        TaskDTO taskDTO = new TaskDTO("Doing things", new Date(2025, 4, 5, 10, 0), null, null, true);
         TaskIO.insertTask(taskDTO, tasks);
         assertEquals(tasks.size(), 1);
     }
@@ -41,7 +41,7 @@ class TaskIOTest {
     @DisplayName("Add Invalid Task ECP")
     void testECP_2() {
         assertEquals(tasks.size(), 0);
-        TaskDTO taskDTO = new TaskDTO("Doing things", new Date(2024, 4, 5, 10, 0), new Date(2024, 4, 5, 12, 0), 0, true);
+        TaskDTO taskDTO = new TaskDTO("Doing things", new Date(2025, 4, 5, 10, 0), new Date(2025, 4, 5, 12, 0), 0, true);
         try {
             TaskIO.insertTask(taskDTO, tasks);
         } catch (IllegalArgumentException ex) {
